@@ -14,7 +14,7 @@ const UserSchema = mongoose.model(
   new mongoose.Schema(
     {
       role: {
-        required: true,
+        required: false,
         type: mongoose.Schema.ObjectId,
         ref: "roles"
       },
@@ -24,7 +24,7 @@ const UserSchema = mongoose.model(
         trim: true
       },
       prenom: {
-        required: true,
+        required: false,
         type: String
       },
       adress: {
@@ -50,7 +50,7 @@ const UserSchema = mongoose.model(
       }
     },
     baseOptions
-  ).pre("save", function(next) {
+  ).pre("save", function (next) {
     this.motDePasse = bcrypt.hashSync(this.motDePasse, saltRounds);
     next();
   })

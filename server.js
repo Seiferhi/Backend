@@ -1,5 +1,8 @@
 var express = require("express");
 var mongoose = require("mongoose");
+
+const cors = require("cors");
+
 //****************************************************
 var client = require("./src/app/controllers/clients");
 var agent = require("./src/app/controllers/agents");
@@ -33,6 +36,7 @@ var villa = require("./src/app/controllers/villas");
 const errorHandler = require("./src/app/_helpers/error-handler");
 
 var app = express();
+app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 const passport = require("passport");
@@ -61,7 +65,7 @@ app.use("/villas", villa);
 
 //********
 
-mongoose.connect("mongodb://localhost:27017/mydb", function(err) {
+mongoose.connect("mongodb://localhost:27017/mydb", function (err) {
   if (err) {
     console.log("Not connected to databases: " + err);
   } else {
@@ -70,6 +74,6 @@ mongoose.connect("mongodb://localhost:27017/mydb", function(err) {
 });
 //-----
 
-app.listen(8080, function() {
+app.listen(8080, function () {
   console.log("server connected on port 8080");
 });

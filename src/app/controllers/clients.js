@@ -80,8 +80,8 @@ router.post("/register", (req, res) => {
           newUser.motDePasse = hash;
           newUser
             .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .then(user => res.status(200).json(user))
+            .catch(err => res.status(400).json(err.message));
         });
       });
     }
@@ -106,7 +106,7 @@ router.post("/login", (req, res) => {
   //find user by email
   User.findOne({ email })
     .populate("role", "nom")
-    .exec(function(err, user) {
+    .exec(function (err, user) {
       //check for user
       if (!user) {
         errors.email = "User not Found";
@@ -136,8 +136,8 @@ router.post("/login", (req, res) => {
 
 //***************************************************
 
-router.delete("/remove/:id", function(req, res) {
-  User.deleteOne({ _id: req.params.id }, function(err) {
+router.delete("/remove/:id", function (req, res) {
+  User.deleteOne({ _id: req.params.id }, function (err) {
     if (err) {
       res.send({ state: "not ok", msg: "err" + err });
     } else {
@@ -166,11 +166,11 @@ router.get(
 );
 
 //***************************************************
-router.get("/all", function(req, res) {
+router.get("/all", function (req, res) {
   User.find({})
     .populate("role", "nom")
     .populate("reclamation")
-    .exec(function(err, result) {
+    .exec(function (err, result) {
       if (err) {
         res.send(err);
       } else {
@@ -196,21 +196,21 @@ router.get("/all", function(req, res) {
 //***************************************************
 
 //********************FORGOT PASSWORD****************//
-router.get("/forgot", function(req, res) {
+router.get("/forgot", function (req, res) {
   res.render("forgot");
 });
 
-router.post("/forgot", function(req, res, next) {
+router.post("/forgot", function (req, res, next) {
   async.waterfall(
     [
-      function(done) {
-        crypto.randomBytes(20, function(err, buf) {
+      function (done) {
+        crypto.randomBytes(20, function (err, buf) {
           var token = buf.toString("hex");
           done(err, token);
         });
       },
-      function(token, done) {
-        User.findOne({ email: req.body.email }, function(err, user) {
+      function (token, done) {
+        User.findOne({ email: req.body.email }, function (err, user) {
           if (!user) {
             res.send("error", "no account with that email address exist");
             return res.redirect("/forgot");
@@ -219,12 +219,12 @@ router.post("/forgot", function(req, res, next) {
           (user.resetPasswordToken = token),
             (user.resetPasswordExpires = Date.now() + 3600000); // 1 heure
 
-          user.save(function(err) {
+          user.save(function (err) {
             done(err, token, user);
           });
         });
       },
-      function(token, user, done) {
+      function (token, user, done) {
         var smtpTransport = nodemailer.createTransport({
           service: "Gmail",
           auth: {
@@ -246,7 +246,7 @@ router.post("/forgot", function(req, res, next) {
             "\n\n" +
             "if you did not request this, please ignore this email and your password will remain ungchanged"
         };
-        smtpTransport.sendMail(mailOptions, function(err) {
+        smtpTransport.sendMail(mailOptions, function (err) {
           console.log("mail sent");
           res.json({
             success: true,
@@ -259,23 +259,23 @@ router.post("/forgot", function(req, res, next) {
         });
       }
     ],
-    function(err) {
+    function (err) {
       if (err) return next(err);
       res.redirect("/forgot");
     }
   );
 });
 
-router.post("/reset/:token", function(req, res) {
+router.post("/reset/:token", function (req, res) {
   async.waterfall(
     [
-      function(done) {
+      function (done) {
         User.findOne(
           {
             resetPassswordToken: req.params.token,
             resetPasswordExpires: { $gt: Date.now() }
           },
-          function(err, user) {
+          function (err, user) {
             if (!user) {
               res.send(
                 "erreur : Password reset token is invalid or has expired."
@@ -283,12 +283,12 @@ router.post("/reset/:token", function(req, res) {
               return res.redirect("back");
             }
             if (req.body.password == req.body.confirm) {
-              user.setPassword(req.body.password, function(err) {
+              user.setPassword(req.body.password, function (err) {
                 user.resetPasswordExpires = undefined;
                 user.resetPasswordToken = undefined;
 
-                user.save(function(err) {
-                  req.logIn(user, function(err) {
+                user.save(function (err) {
+                  req.logIn(user, function (err) {
                     done(err, user);
                   });
                 });
@@ -300,7 +300,7 @@ router.post("/reset/:token", function(req, res) {
           }
         );
       },
-      function(user, done) {
+      function (user, done) {
         var smtpTransport = nodemailer.createTransport({
           service: "Gmail",
           auth: {
@@ -318,7 +318,7 @@ router.post("/reset/:token", function(req, res) {
             user.email +
             "has just changed ."
         };
-        smtpTransport.sendMail(mailOptions, function(err) {
+        smtpTransport.sendMail(mailOptions, function (err) {
           res.json({
             success: true,
             msg: "Success ! Your password has been changed ."
@@ -327,7 +327,7 @@ router.post("/reset/:token", function(req, res) {
         });
       }
     ],
-    function(err) {
+    function (err) {
       // res.redirect('/home')
       res.send("go  to home");
     }
