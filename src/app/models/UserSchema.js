@@ -13,6 +13,11 @@ const UserSchema = mongoose.model(
   "User",
   new mongoose.Schema(
     {
+      role: {
+        required: true,
+        type: mongoose.Schema.ObjectId,
+        ref: "roles"
+      },
       nom: {
         type: String,
         required: true,
@@ -20,6 +25,13 @@ const UserSchema = mongoose.model(
       },
       prenom: {
         required: true,
+        type: String
+      },
+      adress: {
+        type: String
+      },
+
+      tel: {
         type: String
       },
 
@@ -32,16 +44,10 @@ const UserSchema = mongoose.model(
         required: true,
         type: String
       },
-
-      adress: {
+      motDePasse2: {
+        required: true,
         type: String
-      },
-
-      tel: {
-        type: String
-      },
-
-
+      }
     },
     baseOptions
   ).pre("save", function(next) {
@@ -50,4 +56,4 @@ const UserSchema = mongoose.model(
   })
 );
 
-module.exports = mongoose.model("User" );
+module.exports = mongoose.model("User");

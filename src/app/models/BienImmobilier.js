@@ -40,18 +40,14 @@ const BienImmobilierSchema = mongoose.model(
     description: {
       type: String
     },
-    ALaUne: {
+    aLaUne: {
       type: Boolean,
       default: false
     },
     ValableAPartirDe: {
       type: Date
     },
-      client:
-          {type: mongoose.Schema.ObjectId,
-              ref: "Client"},
-
+    client: { type: mongoose.Schema.ObjectId, ref: "Client" }
   })
-
 );
 module.exports = mongoose.model("BienImmobilier");

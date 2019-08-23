@@ -7,7 +7,15 @@ const AppartementSchema = BienImmobilierSchema.discriminator(
     nombreEtage: {
       type: Number,
       required: true
+    },
+    nombrePiece: {
+      type: Number,
+      required: true
+    },
+    nombreFacade: {
+      type: Number,
+      required: true
     }
   })
 );
-module.exports=mongoose.model("Appartement")
+module.exports = mongoose.model("Appartement");

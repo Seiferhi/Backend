@@ -16,9 +16,9 @@ const MaisonSchema = BienImmobilierSchema.discriminator(
       type: Number,
       required: true
     },
-    NombreSalleDeBain: {
+    nombreSalleDeBain: {
       type: Number
     }
   })
 );
-module.exports=mongoose.model("Maison",MaisonSchema.scheme)
+module.exports = mongoose.model("Maison", MaisonSchema.scheme);

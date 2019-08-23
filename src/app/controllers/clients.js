@@ -46,27 +46,28 @@ router.post("/register", (req, res) => {
         d: "mm" //Default
       });
 
-      console.log({
-        nom: req.body.nom,
-        prenom: req.body.prenom,
+      // console.log({
+      //   nom: req.body.nom,
+      //   //prenom: req.body.prenom,
 
-        email: req.body.email,
-        motDePasse: req.body.motDePasse,
-        tel: req.body.tel,
-        adress: req.body.adress,
-        reclamation: req.body.reclamation,
-        role: req.body.role
-      });
+      //   email: req.body.email,
+
+      //   tel: req.body.tel,
+      //   adress: req.body.adress,
+      //   motDePasse: req.body.motDePasse,
+      //   motDePasse2: req.body.motDePasse2,
+      //   role: req.body.role
+      // });
 
       const newUser = new User({
         nom: req.body.nom,
         prenom: req.body.prenom,
-        email: req.body.email,
-        motDePasse: req.body.motDePasse,
         tel: req.body.tel,
         adress: req.body.adress,
+        email: req.body.email,
         role: req.body.role,
-        reclamation: req.body.reclamation,
+        motDePasse: req.body.motDePasse,
+        motDePasse2: req.body.motDePasse2,
         // typeClient : TypeClient.Proprietaire,
         //typeClient1:TypeClient.Visiteur,
 

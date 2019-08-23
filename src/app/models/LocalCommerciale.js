@@ -7,7 +7,14 @@ const LocalCommercialeSchema = BienImmobilierSchema.discriminator(
     nombreEtage: {
       type: Number,
       required: true
+    },
+    nombrePiece: {
+      type: Number,
+      required: true
     }
   })
 );
-module.exports=mongoose.model("LocalCommerciale",LocalCommercialeSchema.scheme)
+module.exports = mongoose.model(
+  "LocalCommerciale",
+  LocalCommercialeSchema.scheme
+);
