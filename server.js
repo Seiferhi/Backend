@@ -1,44 +1,38 @@
 var express = require("express");
 var mongoose = require("mongoose");
-
 const cors = require("cors");
+var bodyParser = require("body-parser");
+//The dotenv package is used to load environmental variables from a .env file into process.env Notice we are referencing a variables.env file at the top of the code. This is where we’ll store all our app credentials.
+require('dotenv').config({ path: 'variables.env' });
+const processMessage = require('../frontOffice/react_test_project/frontend/src/components/reactBot/process-message');
 
 //****************************************************
 var client = require("./src/app/controllers/clients");
+var conseil = require("./src/app/controllers/conseils");
 var agent = require("./src/app/controllers/agents");
 //****************************************************
 var chefAgence = require("./src/app/controllers/chefAgences");
-var role = require("./src/app/controllers/role");
 //*********
 var reclamation = require("./src/app/controllers/reclamations");
 var mail = require("./src/app/controllers/mails");
 
-var bodyParser = require("body-parser");
 var User = require("./src/app/models/UserSchema");
-
-var Role = require("./src/app/models/Role");
-var roleUser = require("./src/app/models/Role");
 
 var allUser = require("./src/app/controllers/user");
 var offre = require("./src/app/controllers/offres");
+var etudeProjet = require("./src/app/controllers/etudeProjet");
+var autre = require("./src/app/controllers/autre");
+var bienImmobilier = require ("./src/app/controllers/bienImmobilier")
 
-var appartement = require("./src/app/controllers/appartements");
-var bureau = require("./src/app/controllers/bureaux");
-
-var maison = require("./src/app/controllers/maisons");
-var localCommerciale = require("./src/app/controllers/localCommerciales");
-var residence = require("./src/app/controllers/residences");
-var terrain = require("./src/app/controllers/terrains");
-var villa = require("./src/app/controllers/villas");
-//
-//var forgetPass= require('./src/app/controllers/forgotPassword');
-//
 const errorHandler = require("./src/app/_helpers/error-handler");
-
+// create app
 var app = express();
-app.use(cors());
+
+//CORS vous permet de configurer la sécurité de l'API Web. Il s'agit de permettre à d'autres domaines de faire des requêtes contre votre API Web. Par exemple, si vous aviez votre API Web sur un serveur et votre application Web sur un autre, vous pouvez configurer CORS dans votre API Web pour permettre à votre application Web d'appeler votre API Web.
+
+app.use(cors()); //pour acceder au backend
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 const passport = require("passport");
 app.use(passport.initialize());
 
@@ -50,30 +44,41 @@ app.set("secretKey", "tokentest");
 app.use("/clients", client);
 app.use("/agents", agent);
 app.use("/chefAgences", chefAgence);
-app.use("/reclamations", reclamation);
-app.use("/roles", role);
+
 app.use("/mails", mail);
 app.use("/users", allUser);
 app.use("/offres", offre);
-app.use("/appartements", appartement);
-app.use("/bureaux", bureau);
-app.use("/localCommerciales", localCommerciale);
-app.use("/masions", maison);
-app.use("/residences", residence);
-app.use("/terrains", terrain);
-app.use("/villas", villa);
-
+app.use("/conseils", conseil); //conseils Router as a Layer in root Router
+app.use("/reclamations", reclamation);
+app.use("/etudeProjets", etudeProjet);
+app.use("/autres", autre);
+app.use("/bienImmobiliers", bienImmobilier);
 //********
 
-mongoose.connect("mongodb://localhost:27017/mydb", function (err) {
-  if (err) {
-    console.log("Not connected to databases: " + err);
-  } else {
-    console.log("Successfully connected to MongoDB");
-  }
-});
-//-----
+// Connection URL
+mongoose
+  .connect("mongodb://localhost:27017/mydb", { useNewUrlParser: true })
+  .then(() => console.log("MongoDB connect..."))
+  .catch(err => console.log("Error:", err.message));
 
-app.listen(8080, function () {
+// mongoose.connect(
+//   "mongodb://localhost:27017/mydb",
+//   { useNewUrlParser },
+//   function(err) {
+//     if (err) {
+//       console.log("Not connected to databases: " + err);
+//     } else {
+//       console.log("Successfully connected to MongoDB");
+//     }
+//   }
+// );
+//-----
+//chatbot
+app.post('/chat', (req, res) => {
+  const { message } = req.body;
+  console.log(message);
+});
+
+app.listen(8080, function() {
   console.log("server connected on port 8080");
 });

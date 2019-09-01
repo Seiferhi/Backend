@@ -1,22 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const baseOptions = {
-  discriminatorKey: "itemtype", // our discriminator key, could be anything
-  collection: "Cateogries" // the name of our collection
-};
-// create Schema
+//create Schema
 
 const BienImmobilierSchema = mongoose.model(
   "BienImmobilier",
   new Schema({
-    idProprietaire: {
+    idUser: {
       type: Schema.Types.ObjectId,
-      ref: "Client"
-    },
-    idAgent: {
-      type: Schema.Types.ObjectId,
-      ref: "Agent"
+      ref: "User"
     },
 
     region: {
@@ -31,11 +23,26 @@ const BienImmobilierSchema = mongoose.model(
       type: Number,
       required: true
     },
+    nombreEtage: {
+      type: Number,
+      required: true
+    },
+    nombrePiece: {
+      type: Number,
+      required: true
+    },
+    nombreFacade: {
+      type: Number,
+      required: true
+    },
+    nombreSalleDeBain: {
+      type: Number
+    },
 
     statut: {
-      type: Boolean,
+      type: String,
       required: true,
-      value: false
+      value:  ["A louer", "A Vendre"]
     },
     description: {
       type: String
@@ -47,7 +54,16 @@ const BienImmobilierSchema = mongoose.model(
     ValableAPartirDe: {
       type: Date
     },
-    client: { type: mongoose.Schema.ObjectId, ref: "Client" }
+    etat: {
+      type: String,
+      value: ["confirme", "en attente", "non confirme"]
+    },
+    categories:{
+      type:String,
+      value:["Appartement","Bureau","LocalCommerciale","Maison","Terrain","Residence","Villa"],
+      required: true,
+    }
+
   })
 );
 module.exports = mongoose.model("BienImmobilier");

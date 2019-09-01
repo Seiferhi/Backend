@@ -11,48 +11,52 @@ Schema = mongoose.Schema;
 
 const UserSchema = mongoose.model(
   "User",
-  new mongoose.Schema(
-    {
-      role: {
-        required: false,
-        type: mongoose.Schema.ObjectId,
-        ref: "roles"
-      },
-      nom: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      prenom: {
-        required: false,
-        type: String
-      },
-      adress: {
-        type: String
-      },
-
-      tel: {
-        type: String
-      },
-
-      email: {
-        required: true,
-        type: String
-      },
-
-      motDePasse: {
-        required: true,
-        type: String
-      },
-      motDePasse2: {
-        required: true,
-        type: String
-      }
+  new mongoose.Schema({
+    role: {
+      type: String,
+      enum: [
+        "agent",
+        "chefAgence",
+        "client",
+        "clientQuiPossedeBien",
+        "clientQuiVeutBien",
+        "visiteur"
+      ]
+      // required: true
     },
-    baseOptions
-  ).pre("save", function (next) {
-    this.motDePasse = bcrypt.hashSync(this.motDePasse, saltRounds);
-    next();
+    activated: {
+      type: Boolean
+    },
+    nom: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    prenom: {
+      required: false,
+      type: String
+    },
+    adress: {
+      type: String
+    },
+
+    tel: {
+      type: String
+    },
+
+    email: {
+      required: true,
+      type: String
+    },
+
+    motDePasse: {
+      required: true,
+      type: String
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    }
   })
 );
 

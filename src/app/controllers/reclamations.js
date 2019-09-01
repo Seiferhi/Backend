@@ -2,19 +2,13 @@ const ReclamtionModel = require("../models/Reclamation");
 const express = require("express");
 const router = express.Router();
 
-router.post("/add", function(req, res) {
-  console.log({
-    titre: req.body.titre,
-    client: req.body.client,
-    description_rec: req.body.description_rec,
-    date_rec: req.body.date_rec,
-    responsable: req.body.responsable
-  });
+router.post("/addReclamation", function(req, res) {
   var Reclamation = new ReclamtionModel({
     titre: req.body.titre,
+    nom: req.body.nom,
+    email: req.body.email,
     description_rec: req.body.description_rec,
-    date_rec: req.body.date_rec,
-    client: req.body.client
+    date_rec: req.body.date_rec
   });
 
   Reclamation.save(function(err) {

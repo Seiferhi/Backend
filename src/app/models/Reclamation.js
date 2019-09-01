@@ -8,6 +8,16 @@ const ReclamationSchema = new Schema({
     trim: true,
     required: false
   },
+  nom: {
+    type: String,
+    trim: true,
+    required: false
+  },
+  email: {
+    type: String,
+    trim: true,
+    required: false
+  },
   description_rec: {
     type: String,
     trim: true,
@@ -17,10 +27,10 @@ const ReclamationSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  client: { type: mongoose.Schema.ObjectId, ref: "Clients" },
+
   etat: {
     type: Boolean,
     default: false
   }
 });
-module.exports = mongoose.model("Reclamations", ReclamationSchema);
+module.exports = mongoose.model("Reclamation", ReclamationSchema);

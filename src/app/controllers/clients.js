@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 //load user module
-const User = require("../models/Client");
+const User = require("../models/UserSchema");
 const gravatar = require("gravatar");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -46,19 +46,6 @@ router.post("/register", (req, res) => {
         d: "mm" //Default
       });
 
-      // console.log({
-      //   nom: req.body.nom,
-      //   //prenom: req.body.prenom,
-
-      //   email: req.body.email,
-
-      //   tel: req.body.tel,
-      //   adress: req.body.adress,
-      //   motDePasse: req.body.motDePasse,
-      //   motDePasse2: req.body.motDePasse2,
-      //   role: req.body.role
-      // });
-
       const newUser = new User({
         nom: req.body.nom,
         prenom: req.body.prenom,
@@ -68,8 +55,6 @@ router.post("/register", (req, res) => {
         role: req.body.role,
         motDePasse: req.body.motDePasse,
         motDePasse2: req.body.motDePasse2,
-        // typeClient : TypeClient.Proprietaire,
-        //typeClient1:TypeClient.Visiteur,
 
         avatar
       });
@@ -104,56 +89,60 @@ router.post("/login", (req, res) => {
   const email = req.body.email;
   const motDePasse = req.body.motDePasse;
   //find user by email
-  User.findOne({ email })
-    .populate("role", "nom")
-    .exec(function (err, user) {
-      //check for user
-      if (!user) {
-        errors.email = "User not Found";
-        return res.status(400).json(errors);
-      }
+  User.findOne({ email }).then(user => {
+    //check for user
+    if (!user) {
+      errors.email = "User not Found";
+      return res.status(400).json(errors);
+    }
 
-      //check motDePasse
-      else if (bcrypt.compare(motDePasse, user.motDePasse)) {
-        // user matched
-        const payload = { id: user.id, nom: user.nom, avatar: user.avatar }; //create jwt payload
-        //sign Token
+    //check password
+    else if (bcrypt.compare(motDePasse, user.motDePasse)) {
+      // user matched
+      const payload = { id: user.id, nom: user.nom, avatar: user.avatar }; //create jwt payload
+      //sign Token
 
-        const token = jwt.sign(payload, req.app.get("secretKey"), {
-          expiresIn: "1h"
-        });
-        res.json({
-          status: "succes",
-          msg: "user found",
-          data: { user: user, token: "JWT " + token }
-        });
-      } else {
-        errors.motDePasse = "motDePasse incorrect";
-        return res.status(400).json(errors);
-      }
-    });
-});
-
-//***************************************************
-
-router.delete("/remove/:id", function (req, res) {
-  User.deleteOne({ _id: req.params.id }, function (err) {
-    if (err) {
-      res.send({ state: "not ok", msg: "err" + err });
+      const token = jwt.sign(payload, req.app.get("secretKey"), {
+        expiresIn: "1h"
+      });
+      res.json({
+        status: "succes",
+        msg: "user found",
+        data: { user: user, token: "JWT " + token }
+      });
     } else {
-      res.send({ state: "ok", msg: "supp" });
+      errors.motDePasse = "motDePasse incorrect";
+      return res.status(400).json(errors);
     }
   });
 });
 
-//***************************************************
-//@Route GET api/users/current
-//@desc return current user
-//@acces Private
+router.put("/deactivateUser", (req, res) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
 
-//sal7tha
-//initializes the passport configuration.
-require("../../../passport")(passport);
+    {
+      activated: false
+    }
+  )
+    .then(resp => res.status(200).json(resp))
+    .catch(err => res.status(400).json(err));
+}),
+  router.put("/activateUser", async (req, res) => {
+    await User.findByIdAndUpdate(req.body.userId, {
+      $set: { activated: true }
+    })
+      .then(resp => res.status(200).json(resp))
+      .catch(err => res.status(400).json(err));
+  }),
+  //***************************************************
+  //@Route GET api/users/current
+  //@desc return current user
+  //@acces Private
+
+  //sal7tha
+  //initializes the passport configuration.
+  require("../../../passport")(passport);
 router.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
@@ -166,11 +155,11 @@ router.get(
 );
 
 //***************************************************
-router.get("/all", function (req, res) {
+router.get("/all", function(req, res) {
   User.find({})
     .populate("role", "nom")
     .populate("reclamation")
-    .exec(function (err, result) {
+    .exec(function(err, result) {
       if (err) {
         res.send(err);
       } else {
@@ -196,21 +185,21 @@ router.get("/all", function (req, res) {
 //***************************************************
 
 //********************FORGOT PASSWORD****************//
-router.get("/forgot", function (req, res) {
+router.get("/forgot", function(req, res) {
   res.render("forgot");
 });
 
-router.post("/forgot", function (req, res, next) {
+router.post("/forgot", function(req, res, next) {
   async.waterfall(
     [
-      function (done) {
-        crypto.randomBytes(20, function (err, buf) {
+      function(done) {
+        crypto.randomBytes(20, function(err, buf) {
           var token = buf.toString("hex");
           done(err, token);
         });
       },
-      function (token, done) {
-        User.findOne({ email: req.body.email }, function (err, user) {
+      function(token, done) {
+        User.findOne({ email: req.body.email }, function(err, user) {
           if (!user) {
             res.send("error", "no account with that email address exist");
             return res.redirect("/forgot");
@@ -219,12 +208,12 @@ router.post("/forgot", function (req, res, next) {
           (user.resetPasswordToken = token),
             (user.resetPasswordExpires = Date.now() + 3600000); // 1 heure
 
-          user.save(function (err) {
+          user.save(function(err) {
             done(err, token, user);
           });
         });
       },
-      function (token, user, done) {
+      function(token, user, done) {
         var smtpTransport = nodemailer.createTransport({
           service: "Gmail",
           auth: {
@@ -246,7 +235,7 @@ router.post("/forgot", function (req, res, next) {
             "\n\n" +
             "if you did not request this, please ignore this email and your password will remain ungchanged"
         };
-        smtpTransport.sendMail(mailOptions, function (err) {
+        smtpTransport.sendMail(mailOptions, function(err) {
           console.log("mail sent");
           res.json({
             success: true,
@@ -259,23 +248,23 @@ router.post("/forgot", function (req, res, next) {
         });
       }
     ],
-    function (err) {
+    function(err) {
       if (err) return next(err);
       res.redirect("/forgot");
     }
   );
 });
 
-router.post("/reset/:token", function (req, res) {
+router.post("/reset/:token", function(req, res) {
   async.waterfall(
     [
-      function (done) {
+      function(done) {
         User.findOne(
           {
             resetPassswordToken: req.params.token,
             resetPasswordExpires: { $gt: Date.now() }
           },
-          function (err, user) {
+          function(err, user) {
             if (!user) {
               res.send(
                 "erreur : Password reset token is invalid or has expired."
@@ -283,12 +272,12 @@ router.post("/reset/:token", function (req, res) {
               return res.redirect("back");
             }
             if (req.body.password == req.body.confirm) {
-              user.setPassword(req.body.password, function (err) {
+              user.setPassword(req.body.password, function(err) {
                 user.resetPasswordExpires = undefined;
                 user.resetPasswordToken = undefined;
 
-                user.save(function (err) {
-                  req.logIn(user, function (err) {
+                user.save(function(err) {
+                  req.logIn(user, function(err) {
                     done(err, user);
                   });
                 });
@@ -300,7 +289,7 @@ router.post("/reset/:token", function (req, res) {
           }
         );
       },
-      function (user, done) {
+      function(user, done) {
         var smtpTransport = nodemailer.createTransport({
           service: "Gmail",
           auth: {
@@ -318,7 +307,7 @@ router.post("/reset/:token", function (req, res) {
             user.email +
             "has just changed ."
         };
-        smtpTransport.sendMail(mailOptions, function (err) {
+        smtpTransport.sendMail(mailOptions, function(err) {
           res.json({
             success: true,
             msg: "Success ! Your password has been changed ."
@@ -327,7 +316,7 @@ router.post("/reset/:token", function (req, res) {
         });
       }
     ],
-    function (err) {
+    function(err) {
       // res.redirect('/home')
       res.send("go  to home");
     }

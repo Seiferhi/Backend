@@ -6,12 +6,6 @@ const Schema = mongoose.Schema;
 const ChefAgenceSchema = UserSchema.discriminator(
   "ChefAgence",
 
-  new Schema({
-    // role:{
-    //     required:true,
-    //     type: mongoose.Schema.ObjectId,
-    //     ref : 'roles'
-    // }
-  })
+  new Schema({})
 );
 module.exports = mongoose.model("ChefAgence");
