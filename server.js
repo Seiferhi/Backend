@@ -3,8 +3,8 @@ var mongoose = require("mongoose");
 const cors = require("cors");
 var bodyParser = require("body-parser");
 //The dotenv package is used to load environmental variables from a .env file into process.env Notice we are referencing a variables.env file at the top of the code. This is where we’ll store all our app credentials.
-require('dotenv').config({ path: 'variables.env' });
-const processMessage = require('../frontOffice/react_test_project/frontend/src/components/reactBot/process-message');
+// require('dotenv').config({ path: 'variables.env' });
+// const processMessage = require('../frontOffice/react_test_project/frontend/src/components/reactBot/process-message');
 
 //****************************************************
 var client = require("./src/app/controllers/clients");
@@ -22,7 +22,7 @@ var allUser = require("./src/app/controllers/user");
 var offre = require("./src/app/controllers/offres");
 var etudeProjet = require("./src/app/controllers/etudeProjet");
 var autre = require("./src/app/controllers/autre");
-var bienImmobilier = require ("./src/app/controllers/bienImmobilier")
+var bienImmobilier = require("./src/app/controllers/bienImmobilier");
 
 const errorHandler = require("./src/app/_helpers/error-handler");
 // create app
@@ -74,10 +74,10 @@ mongoose
 // );
 //-----
 //chatbot
-app.post('/chat', (req, res) => {
-  const { message } = req.body;
-  console.log(message);
-});
+// app.post('/chat', (req, res) => {
+//   const { message } = req.body;
+//   console.log(message);
+// });
 
 app.listen(8080, function() {
   console.log("server connected on port 8080");

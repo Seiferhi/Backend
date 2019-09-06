@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const imagesUpload = require("images-upload-middleware");
 const Schema = mongoose.Schema;
 
 //create Schema
@@ -10,39 +11,44 @@ const BienImmobilierSchema = mongoose.model(
       type: Schema.Types.ObjectId,
       ref: "User"
     },
+    titre: {
+      type: String
+      // required: true
+    },
 
     region: {
-      type: String,
-      required: true
+      type: String
+      // required: true
     },
     surface: {
-      type: Number,
-      required: true
+      type: Number
+      // required: true
     },
     prix: {
-      type: Number,
-      required: true
+      type: Number
+      // required: true
     },
     nombreEtage: {
-      type: Number,
-      required: true
+      type: Number
+      // required: true
     },
     nombrePiece: {
-      type: Number,
-      required: true
+      type: Number
+
+      // required: true
     },
     nombreFacade: {
-      type: Number,
-      required: true
+      type: Number
+      // required: true
     },
     nombreSalleDeBain: {
       type: Number
     },
 
     statut: {
-      type: String,
-      required: true,
-      value:  ["A louer", "A Vendre"]
+      type: String
+      // required: true,
+      // value: ["A louer", "A Vendre"]
     },
     description: {
       type: String
@@ -58,12 +64,25 @@ const BienImmobilierSchema = mongoose.model(
       type: String,
       value: ["confirme", "en attente", "non confirme"]
     },
-    categories:{
-      type:String,
-      value:["Appartement","Bureau","LocalCommerciale","Maison","Terrain","Residence","Villa"],
-      required: true,
-    }
+    categories: {
+      type: String,
+      value: [
+        "Appartement",
+        "Bureau",
+        "LocalCommerciale",
+        "Maison",
+        "Terrain",
+        "Residence",
+        "Villa"
+      ]
+      // required: true
+    },
+    options: {
+      type: Array
 
+      // required: true
+    },
+    imageUrl: { type: String }
   })
 );
 module.exports = mongoose.model("BienImmobilier");

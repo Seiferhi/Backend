@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 //load user module
-const User = require("../models/ChefAgence");
+const User = require("../models/UserSchema");
 const gravatar = require("gravatar");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");

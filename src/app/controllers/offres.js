@@ -4,7 +4,6 @@ const router = express.Router();
 const multer = require("multer");
 const upload = multer({ dest: __dirname + "/uploads/images" });
 
-
 //fs instance qui recuprer les fichier a chaque imag ajoutee sera enregistrer dans uploads
 var fs = require("fs");
 

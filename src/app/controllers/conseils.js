@@ -22,4 +22,14 @@ router.post("/addconseils", (req, res) => {
       res.json(err);
     });
 });
+
+router.get("/all", function(req, res) {
+  Conseil.find({})
+    .then(conseil => {
+      res.send(conseil);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 module.exports = router;

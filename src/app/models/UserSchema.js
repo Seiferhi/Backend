@@ -3,10 +3,10 @@ var mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-const baseOptions = {
-  discriminatorKey: "itemtype", // our discriminator key, could be anything
-  collection: "Acteur" // the name of our collection
-};
+// const baseOptions = {
+//   discriminatorKey: "itemtype", // our discriminator key, could be anything
+//   collection: "Acteur" // the name of our collection
+// };
 Schema = mongoose.Schema;
 
 const UserSchema = mongoose.model(
