@@ -23,7 +23,7 @@ var offre = require("./src/app/controllers/offres");
 var etudeProjet = require("./src/app/controllers/etudeProjet");
 var autre = require("./src/app/controllers/autre");
 var bienImmobilier = require("./src/app/controllers/bienImmobilier");
-
+var rechercheAvancee = require("./src/app/controllers/rechercheAvancee");
 const errorHandler = require("./src/app/_helpers/error-handler");
 // create app
 var app = express();
@@ -53,6 +53,7 @@ app.use("/reclamations", reclamation);
 app.use("/etudeProjets", etudeProjet);
 app.use("/autres", autre);
 app.use("/bienImmobiliers", bienImmobilier);
+app.use("/rechercheAvancees", rechercheAvancee);
 //********
 
 // Connection URL
