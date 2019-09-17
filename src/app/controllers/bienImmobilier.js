@@ -2,23 +2,22 @@ const BienImmobilier = require("../models/BienImmobilier");
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-
 var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/images/uploads");
+  destination: function(req, file, cb) {
+    cb(null, __dirname + "/uploads/images");
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + file.originalname);
   }
 });
-const upload = multer({ storage });
 
-router.post("/add", upload.single("image"), (req, res) => {
-  if (req.file)
-    res.json({
-      imageUrl: `images/uploads/${req.file.filename}`
-    });
-  else res.status("409").json("No Files to Upload.");
+var upload = multer({ storage: storage });
+router.post("/add", upload.array("image", 15), function(req, res) {
+  var fileinfo = req.files;
+  var title = req.body.title;
+  // console.log(title);
+  console.log(fileinfo);
+
   var bienImmobilier = new BienImmobilier({
     idUser: req.body.idUser,
     titre: req.body.titre,
@@ -36,7 +35,7 @@ router.post("/add", upload.single("image"), (req, res) => {
     etat: req.body.etat,
     categories: req.body.categories,
     options: req.body.options,
-    imageUrl: req.body.imageUrl
+    image: fileinfo
   });
 
   bienImmobilier

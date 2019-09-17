@@ -82,7 +82,7 @@ const BienImmobilierSchema = mongoose.model(
 
       // required: true
     },
-    imageUrl: { type: String }
+    image: { type: Object }
   })
 );
 module.exports = mongoose.model("BienImmobilier");

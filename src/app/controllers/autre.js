@@ -22,4 +22,13 @@ router.post("/add", (req, res) => {
       res.json(err);
     });
 });
+router.get("/all", function(req, res) {
+  Autre.find({})
+    .then(autre => {
+      res.send(autre);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 module.exports = router;

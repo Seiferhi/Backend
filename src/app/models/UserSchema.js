@@ -12,6 +12,12 @@ Schema = mongoose.Schema;
 const UserSchema = mongoose.model(
   "User",
   new mongoose.Schema({
+    endpoint: String,
+    keys: Schema.Types.Mixed,
+    createDate: {
+      type: Date,
+      default: Date.now
+    },
     role: {
       type: String,
       enum: [

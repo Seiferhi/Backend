@@ -2,11 +2,13 @@ var express = require("express");
 var mongoose = require("mongoose");
 const cors = require("cors");
 var bodyParser = require("body-parser");
+
 //The dotenv package is used to load environmental variables from a .env file into process.env Notice we are referencing a variables.env file at the top of the code. This is where we’ll store all our app credentials.
 // require('dotenv').config({ path: 'variables.env' });
 // const processMessage = require('../frontOffice/react_test_project/frontend/src/components/reactBot/process-message');
 
 //****************************************************
+
 var client = require("./src/app/controllers/clients");
 var conseil = require("./src/app/controllers/conseils");
 var agent = require("./src/app/controllers/agents");
@@ -25,6 +27,7 @@ var autre = require("./src/app/controllers/autre");
 var bienImmobilier = require("./src/app/controllers/bienImmobilier");
 var rechercheAvancee = require("./src/app/controllers/rechercheAvancee");
 const errorHandler = require("./src/app/_helpers/error-handler");
+
 // create app
 var app = express();
 
@@ -41,6 +44,8 @@ app.use(errorHandler);
 
 app.use(bodyParser.json());
 app.set("secretKey", "tokentest");
+//use router
+
 app.use("/clients", client);
 app.use("/agents", agent);
 app.use("/chefAgences", chefAgence);
@@ -54,11 +59,12 @@ app.use("/etudeProjets", etudeProjet);
 app.use("/autres", autre);
 app.use("/bienImmobiliers", bienImmobilier);
 app.use("/rechercheAvancees", rechercheAvancee);
+
 //********
 
 // Connection URL
 mongoose
-  .connect("mongodb://localhost:27017/mydb", { useNewUrlParser: true })
+  .connect("(keys.mongodb://localhost:27017/mydb", { useNewUrlParser: true })
   .then(() => console.log("MongoDB connect..."))
   .catch(err => console.log("Error:", err.message));
 
@@ -79,6 +85,16 @@ mongoose
 //   const { message } = req.body;
 //   console.log(message);
 // });
+
+// messenger
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+
+let route = require("./routes");
+
+// socket related events
+const socketOps = require("./socketOps");
+socketOps.allSocketOps(io);
 
 app.listen(8080, function() {
   console.log("server connected on port 8080");

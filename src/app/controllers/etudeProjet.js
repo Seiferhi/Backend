@@ -25,4 +25,13 @@ router.post("/add", (req, res) => {
       res.json(err);
     });
 });
+router.get("/all", function(req, res) {
+  EtudeProjet.find({})
+    .then(etudeProjet => {
+      res.send(etudeProjet);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 module.exports = router;

@@ -8,7 +8,7 @@ const OffreModelSchema = new Schema({
     trim: true,
     required: true
   },
-  image: { dataa: Buffer, contentType: String, path: String },
+  image: { type: Object },
   desc_off: {
     type: String,
     trim: true,

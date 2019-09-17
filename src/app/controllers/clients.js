@@ -157,20 +157,14 @@ router.get(
 //***************************************************
 router.get("/all", function(req, res) {
   User.find({})
-    .populate("role", "nom")
-    .populate("reclamation")
-    .exec(function(err, result) {
-      if (err) {
-        res.send(err);
-      } else {
-        res.json({
-          status: "succes",
-          msg: "All Clients",
-          data: { result: result }
-        });
-      }
+    .then(newUser => {
+      res.send(newUser);
+    })
+    .catch(err => {
+      res.json(err);
     });
 });
+
 //***************************************************
 
 //***************************************************
